@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  background-color: #a73022;
+}
+Button {
+  background-color: #4b8dca;
+}
+.shadow {
+  box-shadow: 5px 10px #000;
+}
+.bg-back {
+  background-color: #a73022;
+}
