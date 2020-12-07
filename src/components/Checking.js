@@ -4,31 +4,65 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import covid19 from '../images/covid19.png';
 import axios from 'axios';
 
-class Covid extends Component {
+class Checking extends Component {
   state = {
     info: [],
-    country: ['Argentina', 'Nigeria'],
+    country: [],
     selectedCountry: null,
   };
 
-  onInputChange = (e) => {
-    this.setState({
-      selectedCountry: e.target.value,
-    });
-  };
-
-  listData = () => {
+  listCountry = () => {
     const data = {
       'x-rapidapi-key': '8c896413c0msh5b94573c829464ep19e019jsnb748311900da',
       'x-rapidapi-host': 'covid-193.p.rapidapi.com',
     };
     axios
-      .get(
-        `https://covid-193.p.rapidapi.com/statistics?country=${this.state.selectedCountry}`,
-        {
-          headers: data,
-        }
-      )
+      .get(`https://covid-193.p.rapidapi.com/countries`, {
+        headers: data,
+      })
+      .then((response) => {
+        this.setState({
+          country: response.data.response,
+        });
+        console.log(this.state.country);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    onInputChange = (e) => {
+      this.setState({
+        selectedCountry: e.target.value,
+      });
+    };
+    const { country, selectedCountry } = this.state;
+    return (
+      <Form.Control
+        as="select"
+        size="lg"
+        custom
+        onChange={this.onInputChange}
+        defaultValue={'DEFAULT'}
+      >
+        <option value="DEFAULT" disabled>
+          Select Country
+        </option>
+        {country.map((count) => (
+          <option key={count} value={count}>
+            {count}
+          </option>
+        ))}
+      </Form.Control>
+    );
+  };
+  componentDidMount() {
+    const data = {
+      'x-rapidapi-key': '8c896413c0msh5b94573c829464ep19e019jsnb748311900da',
+      'x-rapidapi-host': 'covid-193.p.rapidapi.com',
+    };
+    axios
+      .get(`https://covid-193.p.rapidapi.com/statistics?country=ghana`, {
+        headers: data,
+      })
       .then((response) => {
         this.setState({
           info: response.data.response,
@@ -37,16 +71,15 @@ class Covid extends Component {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }
 
   onFormSubmit = (e) => {
     e.preventDefault();
-    this.listData();
   };
 
   render() {
-    const { info, country } = this.state;
-    // console.log(info);
+    const { info } = this.state;
+    console.log(info);
     return (
       <div>
         <h1 className="display-2 text-white text-center font-weight-bold mb-5 mt-3">
@@ -61,24 +94,7 @@ class Covid extends Component {
         </h1>
         <Form className="mb-5" onSubmit={this.onFormSubmit}>
           <Form.Group as={Row}>
-            <Col sm={{ span: 7, offset: 2 }}>
-              <Form.Control
-                as="select"
-                size="lg"
-                custom
-                onChange={this.onInputChange}
-                defaultValue={'DEFAULT'}
-              >
-                <option value="DEFAULT" disabled>
-                  Select Country
-                </option>
-                {country.map((count) => (
-                  <option key={count} value={count}>
-                    {count}
-                  </option>
-                ))}
-              </Form.Control>
-            </Col>
+            <Col sm={{ span: 7, offset: 2 }}>{this.listCountry}</Col>
             <Col sm={3} className="mx-auto">
               <Button className="btn-lg" type="submit">
                 Submit
@@ -87,32 +103,20 @@ class Covid extends Component {
           </Form.Group>
         </Form>
         <Jumbotron className="mt-5 bg-white shadow">
-          <Row>
-            <Col sm={6}>
-              <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
-                Country
-              </h1>
-            </Col>
-            <Col sm={6}>
-              <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
-                Cases
-              </h1>
-            </Col>
-          </Row>
           {info.map((req) => (
             <Row key={req.country}>
               <Col sm={6}>
-                {/* <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
+                <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
                   Country
-                </h1> */}
+                </h1>
                 <h2 className="mt-5 mb-5 p-5 bg-primary text-white text-center display-2 rounded shadow">
                   <span>{req.country}</span>
                 </h2>
               </Col>
               <Col sm={6}>
-                {/* <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
+                <h1 className="mb-5 p-3 bg-back text-white text-center rounded shadow">
                   Cases
-                </h1> */}
+                </h1>
                 <Row>
                   <Col>
                     <small className="bg-primary text-white font-weight-bold p-2 rounded">
@@ -182,4 +186,4 @@ class Covid extends Component {
   }
 }
 
-export default Covid;
+export default Checking;
