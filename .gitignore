@@ -5,6 +5,11 @@
 /.pnp
 .pnp.js
 
+# files
+/src/components/Checking.js
+/src/components/Checking1.js
+/src/components/Country.js
+
 # testing
 /coverage
 
